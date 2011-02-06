@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<schema version="0.3">
+        <field name="aID" type="I" size="10">
+            <KEY />
+            <UNSIGNED />
+            <AUTOINCREMENT />
+        </field>
+
+        <!-- We'll have to occasionally check that packages are still installed, and clean up those that aren't -->
+        <field name="ptPkgID" type="I" size="10">
+            <UNSIGNED />
+        </field>
+
+        <field name="ptCode" type="C" size="10">
+            <NOTNULL />
+        </field>
+
+        <field name="ptName" type="C" size="50">
+            <NOTNULL />
+        </field>
+
+        <field name="ptTemplate" type="X" size="1000">
+            <NOTNULL />
+        </field>
+
+	<field name="rCreateDate" type="T">
+            <DEFTIMESTAMP />
+        </field>
+        <field name="rDeleteDate" type="T" />
+</schema>

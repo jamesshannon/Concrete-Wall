@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <schema version="0.3">
-        <field name="aID" type="I" size="10">
+    <table name="LWPostingTypes">
+        <field name="ptID" type="I" size="10">
             <KEY />
             <UNSIGNED />
             <AUTOINCREMENT />
@@ -23,8 +24,49 @@
             <NOTNULL />
         </field>
 
-	<field name="rCreateDate" type="T">
+        <field name="ptExampleData" type="X" size="1000">
+            <NOTNULL />
+        </field>
+
+        <field name="ptShareWith" type="I" size="1">
+            <NOTNULL />
+            <UNSIGNED />
+        </field>
+
+        <field name="ptUserOverrideShare" type="L" />
+
+        <field name="ptActive" type="L" />
+
+	<field name="ptCreateDate" type="T">
             <DEFTIMESTAMP />
         </field>
-        <field name="rDeleteDate" type="T" />
+        <field name="ptDeleteDate" type="T" />
+    </table>
+
+    <table name="LWPostings">
+        <field name="pID" type="I" size="10">
+            <KEY />
+            <UNSIGNED />
+            <AUTOINCREMENT />
+        </field>
+
+        <field name="pptID" type="I" size="10">
+            <NOTNULL />
+            <UNSIGNED />
+        </field>
+
+        <field name="pUID" type="I" size="10">
+            <NOTNULL />
+            <UNSIGNED />
+        </field>
+
+        <field name="pData" type="X" size="1000">
+            <NOTNULL />
+        </field>
+
+        <field name="ptCreateDate" type="T">
+            <DEFTIMESTAMP />
+        </field>
+        <field name="ptDeleteDate" type="T" />
+    </table>
 </schema>

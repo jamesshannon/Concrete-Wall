@@ -12,10 +12,10 @@ class LertecoWallPackage extends Package {
 
     protected $pkgHandle = 'lerteco_wall';
     protected $appVersionRequired = '5.4.1.1';
-    protected $pkgVersion = '0.8.0';
+    protected $pkgVersion = '0.7.0';
 
     public function getPackageDescription() {
-	return t("Adds functionality to enable a page where recent site activities are posted. Similar to The Facebook's wall.");
+	return t("Adds functionality to enable a page where recent site activities are posted. Similar concept to The Facebook's wall.");
     }
 
     public function getPackageName() {

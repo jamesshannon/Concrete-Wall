@@ -9,6 +9,7 @@
 
         <!-- We'll have to occasionally check that packages are still installed, and clean up those that aren't -->
         <field name="ptPkgID" type="I" size="10">
+            <NOTNULL />
             <UNSIGNED />
         </field>
 
@@ -41,6 +42,13 @@
             <DEFTIMESTAMP />
         </field>
         <field name="ptDeleteDate" type="T" />
+
+        <index name="uniquePosting">
+            <descr>Make sure every package/posting code is unique</descr>
+            <col>ptPkgID</col>
+            <col>ptCode</col>
+            <UNIQUE/>
+        </index>
     </table>
 
     <table name="LWPostings">

@@ -11,9 +11,6 @@ defined('C5_EXECUTE') or die("Access Denied.");
  *
  */
 
-//ADODB_Active_Record::ClassHasMany('Resource', 'locations', 'rlrID', 'ResourceLocation');
-//ADODB_Active_Record::ClassHasMany('Resource', 'files', 'rfrID', 'ResourceFile');
-
 Loader::model('package');
 Loader::library('lwmodel', 'lerteco_wall');
 Loader::helper('postings', 'lerteco_wall');
@@ -99,6 +96,9 @@ class PostingType extends LWModel {
 class Posting extends LWModel {
     var $_table = 'LWPostings';
 
+    public $ui = null;
+    public $type = null;
+
     function Posting($id = null) {
         parent::__construct();
 
@@ -125,6 +125,27 @@ class Posting extends LWModel {
 
         $this->Save();
     }
+
+    function getUserInfo() {
+        if ($this->pUID == null) {
+            return null;
+        } elseif ($this->ui == null) {
+            $this->ui = UserInfo::getByID($this->pUID);
+        }
+
+        return $this->ui;
+    }
+
+    function getType() {
+        if ($this->pptID == null) {
+            return null;
+        } elseif ($this->type == null) {
+            $this->type = new PostingType();
+            $this->type->Load($this->pptID);
+        }
+
+        return $this->type;
+    }
 }
 
 class PostingTypeList extends DatabaseItemList {
@@ -135,11 +156,6 @@ class PostingTypeList extends DatabaseItemList {
         $this->setQuery("select ptID FROM LWPostingTypes");
         $this->filter('ptDeleteDate', null, 'IS');
         $this->sortBy('ptPkgID', 'ASC');
-    }
-
-    public function filterByKeywords($kw) {
-        //$db = Loader::db();
-        //$this->filter(false, "(FileSets.fsName like " . $db->qstr('%' . $kw . '%') . ")");
     }
 
     public function getByPkg($pkg, $itemsToGet = 0, $offset = 0) {
@@ -164,15 +180,35 @@ class PostingList extends DatabaseItemList {
     public $sets = array();
     protected $itemsPerPage = 25;
 
-    function __construct() {
+    function __construct($viewerUID = null) {
         $this->setQuery("select pID FROM LWPostings p");
-        $this->filter('ptDeleteDate', null, 'IS');
-        $this->sortBy('ptCreateDate', 'DESC');
         $this->addToQuery("INNER JOIN LWPostingTypes pt ON p.pptID = pt.ptID");
+
+        $this->filter('ptActive', true, '=');
+        $this->filter('ptDeleteDate', null, 'IS');
+
+        if ($viewerUID == null) {
+            $viewer = new User();
+            if ($viewer && intval($viewer->uID)) {
+                $viewerUID = $viewer->uID;
+            }
+        }
+
+        $permFilter = "(pt.ptShareWith = 2";
+        if ($viewerUID != null) {
+            $permFilter .= " || p.pUID = $viewerUID || p.pUID IN (SELECT uID FROM UsersFriends WHERE friendUID = $viewerUID)";
+        }
+        $permFilter .= ")";
+        $this->filter(null, $permFilter);
+
+        $this->sortBy('pCreateDate', 'DESC');
     }
 
     public function filterByWall($uID) {
         $this->filter("pUID", $uID);
+    }
+
+    public function filterByFeed($uID) {
     }
 
     public function filterByKeywords($kw) {
@@ -186,12 +222,11 @@ class PostingList extends DatabaseItemList {
 
     public function get($itemsToGet = 0, $offset = 0) {
         if (! count($this->sets)) {
-
             $r = parent::get($itemsToGet, $offset);
 
             foreach($r as $row) {
-                $postingtype = new PostingType($row['ptID']);
-                $this->sets[] = $postingtype;
+                $posting = new Posting($row['pID']);
+                $this->sets[] = $posting;
             }
         }
         return $this->sets;

@@ -17,9 +17,7 @@ class LWModel extends ADOdb_Active_Record {
     var $error = '';
 
     public function __construct() {
-        print_r("before db");
         $db = Loader::db();
-        print_r("after db");
         parent::__construct();
     }
 

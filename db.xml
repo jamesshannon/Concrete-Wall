@@ -74,9 +74,9 @@
             <NOTNULL />
         </field>
 
-        <field name="ptCreateDate" type="T">
+        <field name="pCreateDate" type="T">
             <DEFTIMESTAMP />
         </field>
-        <field name="ptDeleteDate" type="T" />
+        <field name="pDeleteDate" type="T" />
     </table>
 </schema>

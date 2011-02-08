@@ -73,4 +73,8 @@ class WallHelper {
 
         return vsprintf($template, $data);
     }
+
+    static function getAvatarAspectRatio($size) {
+        return ($size / min(AVATAR_WIDTH, AVATAR_HEIGHT));
+    }
 }

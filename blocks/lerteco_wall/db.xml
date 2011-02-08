@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<schema version="0.3">
+    <table name="btLertecoWall">
+        <field name="bID" type="I">
+            <KEY />
+            <UNSIGNED />
+        </field>
+        <field name="btDisplayType" type="I" size="1">
+            <UNSIGNED />
+        </field>
+    </table>
+</schema>

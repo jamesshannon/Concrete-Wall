@@ -7,6 +7,10 @@
         </field>
         <field name="btDisplayType" type="I" size="1">
             <UNSIGNED />
+            <NOTNULL />
+        </field>
+        <field name="btMaxPostings" type="I" size="1">
+            <UNSIGNED />
         </field>
     </table>
 </schema>

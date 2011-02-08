@@ -15,8 +15,10 @@ defined('C5_EXECUTE') or die("Access Denied.");
 //ADODB_Active_Record::ClassHasMany('Resource', 'files', 'rfrID', 'ResourceFile');
 
 Loader::model('package');
+Loader::library('lwmodel', 'lerteco_wall');
+Loader::helper('postings', 'lerteco_wall');
 
-class PostingType extends LModel {
+class PostingType extends LWModel {
     const SHAREWITH_FRIENDS = 1;
     const SHAREWITH_ALL = 2;
 
@@ -32,25 +34,28 @@ class PostingType extends LModel {
         }
     }
 
-    function  Load($id, $bindarr = false) {
+    function Load($id, $bindarr = false) {
         parent::Load("ptID = $id", $bindarr);
-        $this->pkg = PostingType::pkg($this->ptPkgID);
+        $this->pkg = PostingsHelper::pkg($this->ptPkgID);
+    }
+
+    function LoadByPkgTypeKey($pkg, $type) {
+        $this->pkg = PostingsHelper::pkg($pkg);
+        
+        parent::Load("ptPkgID = " . (is_null($this->pkg) ? "0" : $this->pkg->getPackageID()) . " AND ptCode = '" . mysql_real_escape_string($type) . "'");
     }
 
     function LoadOrUpdateOrRegister($pkg, $type, $name, $post_template, $post_template_example_arr, $share_with) {
-        $this->pkg = PostingType::pkg($pkg);
+        $this->pkg = PostingsHelper::pkg($pkg);
         $type = strtolower($type);
 
-        if (! is_array($post_template_example_arr)) {
-            $post_template_example_arr = array($post_template_example_arr);
-        }
-        $post_template_example_arr = serialize($post_template_example_arr);
-
+        $post_template_example_arr = PostingsHelper::prepData($post_template_example_arr);
+        
         // first we look in the db for an existing entry and load that if found.
         // if found, we might update (but only the name, template, and example
         // if not found, we create a new one for them
 
-        parent::Load("ptPkgID = " . (is_null($this->pkg) ? "0" : $this->pkg->getPackageID()) . " AND ptCode = '" . mysql_real_escape_string($type) . "'");
+        $this->LoadByPkgTypeKey($this->pkg, $type);
         
         if ($this->ptID) {
             //should we update?
@@ -81,23 +86,44 @@ class PostingType extends LModel {
             return "concrete5 Core";
         } else {
             if (is_null($this->pkg)) {
-                $this->pkg = PostingType::pkg($this->ptPkgID);
+                $this->pkg = PostingsHelper::pkg($this->ptPkgID);
             }
 
-            return $pkg->getPackageName();
+            return $this->pkg->getPackageName();
         }
     }
 
-    static function pkg($pkg) {
-        if (is_null($pkg) || $pkg === 0) {
-            return null;
-        } elseif (is_object($pkg)) {
-            return $pkg;
-        } elseif (is_numeric($pkg)) {
-            return Package::getByID($pkg);
-        } else {
-            return Package::getByHandle($pkg);
+    
+}
+
+class Posting extends LWModel {
+    var $_table = 'LWPostings';
+
+    function Posting($id = null) {
+        parent::__construct();
+
+        if ($id != null) {
+            $this->Load($id);
         }
+    }
+
+    function Load($id, $bindarr = false) {
+        parent::Load("pID = $id", $bindarr);
+    }
+
+    function Add($pkg, $type, $uID, $data) {
+        $type = new PostingType();
+        $type->LoadByPkgTypeKey($pkg, $type);
+
+        $this->AddWithType($type, $uID, $data);
+    }
+
+    function AddWithType($posting_type, $uID, $data) {
+        $this->pptID = $posting_type->ptID;
+        $this->pUID = $uID;
+        $this->pData = PostingsHelper::prepData($data);
+
+        $this->Save();
     }
 }
 
@@ -117,18 +143,56 @@ class PostingTypeList extends DatabaseItemList {
     }
 
     public function getByPkg($pkg, $itemsToGet = 0, $offset = 0) {
-        $this->filter("ptPkgID", PostingType::pkg($pkg)->getPackageID());
+        $this->filter("ptPkgID", PostingsHelper::pkg($pkg)->getPackageID());
     }
 
     public function get($itemsToGet = 0, $offset = 0) {
         if (! count($this->sets)) {
 
-        $r = parent::get($itemsToGet, $offset);
-        
-        foreach($r as $row) {
-            $postingtype = new PostingType($row['ptID']);
-            $this->sets[] = $postingtype;
+            $r = parent::get($itemsToGet, $offset);
+
+            foreach($r as $row) {
+                $postingtype = new PostingType($row['ptID']);
+                $this->sets[] = $postingtype;
+            }
         }
+        return $this->sets;
+    }
+}
+
+class PostingList extends DatabaseItemList {
+    public $sets = array();
+    protected $itemsPerPage = 25;
+
+    function __construct() {
+        $this->setQuery("select pID FROM LWPostings p");
+        $this->filter('ptDeleteDate', null, 'IS');
+        $this->sortBy('ptCreateDate', 'DESC');
+        $this->addToQuery("INNER JOIN LWPostingTypes pt ON p.pptID = pt.ptID");
+    }
+
+    public function filterByWall($uID) {
+        $this->filter("pUID", $uID);
+    }
+
+    public function filterByKeywords($kw) {
+        //$db = Loader::db();
+        //$this->filter(false, "(FileSets.fsName like " . $db->qstr('%' . $kw . '%') . ")");
+    }
+
+    public function getByPkg($pkg, $itemsToGet = 0, $offset = 0) {
+        $this->filter("ptPkgID", PostingsHelper::pkg($pkg)->getPackageID());
+    }
+
+    public function get($itemsToGet = 0, $offset = 0) {
+        if (! count($this->sets)) {
+
+            $r = parent::get($itemsToGet, $offset);
+
+            foreach($r as $row) {
+                $postingtype = new PostingType($row['ptID']);
+                $this->sets[] = $postingtype;
+            }
         }
         return $this->sets;
     }

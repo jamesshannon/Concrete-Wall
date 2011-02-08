@@ -7,8 +7,8 @@ class DashboardUsersLertecoWallController extends Controller {
 	Loader::model('postings', 'lerteco_wall');
         $valt = Loader::helper('validation/token');
 
-        $type = new PostingType();
-        $type->LoadOrUpdateOrRegister(null, 'friend_add', 'Friend Added', 'person:are/is/ now friends with %1$u', 1, PostingType::SHAREWITH_ALL);
+        //$type = new PostingType();
+        //$type->LoadOrUpdateOrRegister(null, 'friend_add', 'Friend Added', 'person:are/is/ now friends with %1$u', 1, PostingType::SHAREWITH_ALL);
 
         //$type = new PostingType();
         //$type->LoadOrUpdateOrRegister(null, 'like_add', 'Likes', 'person:like/likes/ the [link here]', 1, PostingType::SHAREWITH_ALL);

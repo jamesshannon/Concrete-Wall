@@ -36,7 +36,9 @@
 
         <field name="ptUserOverrideShare" type="L" />
 
-        <field name="ptActive" type="L" />
+        <field name="ptActive" type="L">
+            <default value="1" />
+        </field>
 
 	<field name="ptCreateDate" type="T">
             <DEFTIMESTAMP />

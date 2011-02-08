@@ -5,11 +5,10 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
 /* Installer for the Lerteco Wall Package
  * copyright Lerteco
  *
- * Included icon is from *********
  */
+Loader::model('postings', 'lerteco_wall');
 
 class LertecoWallPackage extends Package {
-
     protected $pkgHandle = 'lerteco_wall';
     protected $appVersionRequired = '5.4.1.1';
     protected $pkgVersion = '0.7.0';
@@ -52,6 +51,18 @@ class LertecoWallPackage extends Package {
             $page = SinglePage::add('/dashboard/users/lerteco_wall', $pkg);
             $page->update(array('cName'=>t('Concrete Wall')));
         }
+
+        BlockType::installBlockTypeFromPackage('lerteco_wall', $pkg);
+    }
+
+    public function postAndPossiblyRegister($uID, $data, $arrPostingType) {
+        Loader::model('postings', 'lerteco_wall');
+
+        $type = new PostingType();
+        call_user_func_array(array($type, 'LoadOrUpdateOrRegister'), $arrPostingType);
+
+        $post = new Posting();
+        $post->AddWithType($type, $uID, $data);
     }
 
 }

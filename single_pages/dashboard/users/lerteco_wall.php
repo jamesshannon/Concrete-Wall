@@ -10,7 +10,14 @@
 <h1><span>Concrete Wall Configuration</span></h1>
 
 <div class="ccm-dashboard-inner">
-    Lerteco's Concrete Wall is....
+    <p>
+        Concrete Wall provides a mechanism for the core and other add-ons to add notifications to a user's wall, similar to The Facebook.
+    </p>
+    <p>
+        This page allows you to see all registered notification types (they must be registered by an add-on and activated by your before being used), grouped by the add-on (or core) that will create these notifications of a type, an example notification, and the ability to configure whether notifications of that type will be displayed and who they'll be displayed to [coming soon]. Notification types are things like "new friend added" or "posted an article" while a notification would be "James is now friends with Jill" or "You posted the article 'C5 Tips &amp; Tricks'".
+    </p>
+    <p>
+
 
     <form method="POST" action="<?php echo $this->url('/dashboard/users/lerteco_wall', 'save') ?>">
         <?php echo $valt->output('wall_admin_update'); ?>
@@ -30,7 +37,7 @@
                           $last_pkg = $type->ptPkgID;
                 ?>
                         <tr>
-                            <td colspan="4"><?php echo $type->getPackageName() ?></td>
+                            <td colspan="4"><h2><?php echo $type->getPackageName() ?></h2></td>
                         </tr>
                 <?php }
                 ?>

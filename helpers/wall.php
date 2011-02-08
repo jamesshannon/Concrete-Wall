@@ -13,8 +13,10 @@ class WallHelper {
     static function getGraffiti($template, $data, $time, $touser = false) {
         $element_test = array();
         $data = unserialize($data);
-        
-        $matches = preg_match_all('/%(\d)\$(u)/', $template, $element_test);
+
+        $regexp = '/%(\d)\$([u|p])/';
+
+        $matches = preg_match_all($regexp, $template, $element_test);
 
         if ($matches) {
             //at least one match of one of our special type specifiers
@@ -35,7 +37,7 @@ class WallHelper {
 
                         // we try to load an element and pass it a userinfo object. if we get something back, we go with that, otherwise a default user link
                         ob_start();
-                            Loader::element('wall_user', array('ui' => $ui));
+                            Loader::element('wall_user', array('userinfo' => $ui));
                             $output = ob_get_contents();
                         ob_end_clean();
 
@@ -43,15 +45,29 @@ class WallHelper {
                             $output = "<a href=\"" . BASE_URL . View::url('/profile', 'view', $ui->getUserID()) . "\">" . $ui->getUserName() . "</a>";
                         }
                         break;
+
+                    case 'p':
+                        $page = Page::getByID($data[$loc]);
+                        
+                        // we try to load an element and pass it a page object. if we get something back, we go with that, otherwise a default page link
+                        ob_start();
+                            Loader::element('wall_page', array('page' => $page));
+                            $output = ob_get_contents();
+                        ob_end_clean();
+
+                        if (! $output) {
+                            $output = "<a href=\"" . BASE_URL . View::url($page->getcollectionpath()) . "\">" . $page->getCollectionName() . "</a>";
+                        }
+                        break;
                 }
 
                 $data[$loc] = $output;
             }
 
-            $template = preg_replace('/%(\d)\$[u]/', '%${1}\$s', $template);
+            $template = preg_replace($regexp, '%${1}\$s', $template);
         }
 
-        //do a selection based on person (2nd or 3rd person). This format "keyword:option/option" can be expanded
+        //do a selection based on person (2nd or 3rd person). This format "keyword:option/option/" can be extended in the future
         $person_backref = ($touser ? '${1}' : '${2}');
         $template = preg_replace('#person:([^/]*)/([^/]*)/#', $person_backref, $template);
 

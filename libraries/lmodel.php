@@ -13,11 +13,13 @@ defined('C5_EXECUTE') or die("Access Denied.");
 * @license http://www.opensource.org/licenses/mit-license.php MIT
 *
 */
-class LModel extends ADOdb_Active_Record {
+class LWModel extends ADOdb_Active_Record {
     var $error = '';
 
     public function __construct() {
+        print_r("before db");
         $db = Loader::db();
+        print_r("after db");
         parent::__construct();
     }
 

@@ -69,10 +69,10 @@ class PostingType extends LWModel {
             $this->ptCode = $type;
             $this->ptName = $name;
             $this->ptTemplate = $post_template;
-            $this->ptExampleData = serialize($post_template_example_arr);
+            $this->ptExampleData = $post_template_example_arr;
             $this->ptShareWith = $share_with;
             $this->ptUserOverrideShare = true;
-            $this->ptActive = false;
+            $this->ptActive = true;
 
             $this->Save();
         }

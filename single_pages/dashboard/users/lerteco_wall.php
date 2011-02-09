@@ -22,7 +22,7 @@
     <form method="POST" action="<?php echo $this->url('/dashboard/users/lerteco_wall', 'save') ?>">
         <?php echo $valt->output('wall_admin_update'); ?>
 
-        <table>
+        <table width="50%">
             <thead>
                 <tr>
                     <th>Type</th>
@@ -43,7 +43,7 @@
                 ?>
                     <tr>
                         <td><?php echo $type->ptName ?></td>
-                        <td>You <?php echo $wall->getGraffiti($type->ptTemplate, $type->ptExampleData, 'now', true) ?></td>
+                        <td><a href="#">James</a> <?php echo $wall->getGraffiti($type->ptTemplate, $type->ptExampleData, false) ?></td>
                         <td>
                             <?php if ($type->ptShareWith == PostingType::SHAREWITH_FRIENDS) { ?>
                                 User's Friends

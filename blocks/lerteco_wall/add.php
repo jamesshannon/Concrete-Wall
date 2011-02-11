@@ -1,7 +1,7 @@
 <?php
     defined('C5_EXECUTE') or die("Access Denied.");
-    $btDisplayType = '1';
-    $btMaxPostings = '25';
+
+    $args = array('btDisplayType' => '1', 'btMaxPostings' => '25', 'adding' => true);
     
-    include ('edit.php');
+    $this->inc('edit.php', $args);
 ?>

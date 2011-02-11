@@ -9,7 +9,10 @@ defined('C5_EXECUTE') or die("Access Denied.");
     </p>
 
     <?php echo $form->radio('btDisplayType', '1', $btDisplayType) ?> User-specific Wall <?php echo $form->radio('btDisplayType', '2', $btDisplayType) ?> Site-wide Activity Feed<br />
-    <em>Note that the first time a wall is displayed while adding the block, it'll behave like an activity feed.</em><br />
+    <?php if ($adding) { ?>
+        <em>Note that the first time a wall is displayed while adding the block, it'll behave like an activity feed.</em><br />
+    <?php } ?>
+    
     <br />
     Max Postings: <?php echo $form->text('btMaxPostings', $btMaxPostings) ?>
 </div>

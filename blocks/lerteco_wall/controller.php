@@ -6,8 +6,8 @@ Loader::model('postings', 'lerteco_wall');
 class LertecoWallBlockController extends BlockController {
 
     protected $btTable = 'btLertecoWall';
-    protected $btInterfaceWidth = "300";
-    protected $btInterfaceHeight = "180";
+    protected $btInterfaceWidth = "320";
+    protected $btInterfaceHeight = "200";
 
     /**
      * Used for localization. If we want to localize the name/description we have to include this

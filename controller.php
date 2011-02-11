@@ -46,7 +46,9 @@ class LertecoWallPackage extends Package {
 
         Loader::model('single_page');
 
-        if (Page::getByPath('/dashboard/users/lerteco_wall')->cID == '') {
+        //check if the dashboard single has already been added
+        $single = Page::getByPath('/dashboard/users/lerteco_wall');
+        if (! is_object($single) ||  ($single->isError() && $single->getError() == COLLECTION_NOT_FOUND)) {
             // Admin Page
             $page = SinglePage::add('/dashboard/users/lerteco_wall', $pkg);
             $page->update(array('cName'=>t('Concrete Wall')));

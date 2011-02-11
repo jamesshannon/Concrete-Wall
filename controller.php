@@ -34,7 +34,7 @@ class LertecoWallPackage extends Package {
 	$this->configure();
 
         //should only have to install once... not on upgrades
-        //BlockType::installBlockTypeFromPackage('lerteco_notify', $pkg);
+        BlockType::installBlockTypeFromPackage('lerteco_wall', $pkg);
     }
 
     public function uninstall() {
@@ -53,8 +53,6 @@ class LertecoWallPackage extends Package {
             $page = SinglePage::add('/dashboard/users/lerteco_wall', $pkg);
             $page->update(array('cName'=>t('Concrete Wall')));
         }
-
-        BlockType::installBlockTypeFromPackage('lerteco_wall', $pkg);
     }
 
     public function postAndPossiblyRegister($uID, $data, $arrPostingType) {

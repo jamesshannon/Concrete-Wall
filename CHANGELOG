@@ -1,1 +1,6 @@
-0.7 - Feb 2011 - Developer Preview
+0.7.1 - Feb 2011 - Bug Fixes & Best Practices
+* Enlarged max length for posting type code from 10 to 50 characters
+* Implemented c5 best practices, including use of ->inc() and checking for pre-existing single pages
+* div added around view for better end-user styling
+
+0.7.0 - Feb 2011 - Developer Preview

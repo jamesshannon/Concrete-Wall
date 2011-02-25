@@ -2,7 +2,7 @@
 defined('C5_EXECUTE') or die("Access Denied.");
 
 /**
- * The resource class represents a postings and postingtypes, along with the list classes
+ * The postings class represents postings and postingtypes, along with the list classes
  *
  * @package lerteco_wall
  * @category Models
@@ -47,7 +47,13 @@ class PostingType extends LWModel {
         $type = strtolower($type);
 
         $post_template_example_arr = PostingsHelper::prepData($post_template_example_arr);
-        
+
+        // bug where a too-long type would get truncated into the db and then not get pulled back when we look for the full thing
+        // we could truncate now, but if the truncated length is ambiguous, it'll run into problems down the road
+        if (strlen($type) > 50) {
+            throw new Exeption("Type cannot be longer than 50 characters");
+        }
+
         // first we look in the db for an existing entry and load that if found.
         // if found, we might update (but only the name, template, and example
         // if not found, we create a new one for them

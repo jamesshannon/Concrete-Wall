@@ -96,6 +96,18 @@ class PostingType extends LWModel {
         }
     }
 
+    function getPackageHandle() {
+        if (is_null($this->ptPkgID) || $this->ptPkgID == 0) {
+            return "c5core";
+        } else {
+            if (is_null($this->pkg)) {
+                $this->pkg = PostingsHelper::pkg($this->ptPkgID);
+            }
+
+            return $this->pkg->getPackageHandle();
+        }
+    }
+
     
 }
 

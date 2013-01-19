@@ -9,7 +9,7 @@
 ?>
 
 <div class="lerteco_wall">
-    <h3>Recent Activity</h3>
+    <h3><?php echo t('Recent Activity')?></h3>
     <ul class="lerteco_wall">
         <?php foreach ($postings as $posting) {
             $user = $posting->getUserInfo();

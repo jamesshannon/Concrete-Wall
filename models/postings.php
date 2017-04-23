@@ -39,14 +39,12 @@ class PostingType extends LWModel {
     function LoadByPkgTypeKey($pkg, $type) {
         $this->pkg = PostingsHelper::pkg($pkg);
         
-        // parent::Load("ptPkgID = " . (is_null($this->pkg) ? "0" : $this->pkg->getPackageID()) . " AND ptCode = '" . mysql_real_escape_string($type) . "'");
-        if (function_exists('mysqli_connect')) {
-			// Adhere to 5.6.3.4+ MySQLi if available - Enlil
-			$link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
-			parent::Load("ptPkgID = " . (is_null($this->pkg) ? "0" : $this->pkg->getPackageID()) . " AND ptCode = '" . mysqli_real_escape_string($link, $type) . "'");
-		} else {
-			parent::Load("ptPkgID = " . (is_null($this->pkg) ? "0" : $this->pkg->getPackageID()) . " AND ptCode = '" . mysql_real_escape_string($type) . "'");
-		}
+        if (function_exists('mysqli_connect')) { // Adhere to 5.6.3.4+ MySQLi if available - Enlil
+		$link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+		parent::Load("ptPkgID = " . (is_null($this->pkg) ? "0" : $this->pkg->getPackageID()) . " AND ptCode = '" . mysqli_real_escape_string($link, $type) . "'");
+	} else {
+		parent::Load("ptPkgID = " . (is_null($this->pkg) ? "0" : $this->pkg->getPackageID()) . " AND ptCode = '" . mysql_real_escape_string($type) . "'");
+	}
     }
 
     function LoadOrUpdateOrRegister($pkg, $type, $name, $post_template, $post_template_example_arr, $share_with) {
